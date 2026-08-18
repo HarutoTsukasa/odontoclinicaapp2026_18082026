@@ -15,17 +15,19 @@
         <h1>Detalle de la cita</h1>
         <p th:text="${#temporals.format(cita.fechaHora, 'EEEE dd/MM/yyyy, HH:mm')}">Fecha</p>
       </div>
-      <a class="btn btn-outline-clinic" href="/citas">← Volver al listado</a>
+      <a class="btn btn-outline-clinic" href="/citas" title="Volver al listado de citas" data-bs-toggle="tooltip">
+        <i class="bi bi-arrow-left"></i> Volver al listado
+      </a>
     </div>
 
     <div class="card-soft p-3 p-lg-4 mb-4">
       <div class="row g-3">
         <div class="col-md-4">
-          <div class="small text-muted">Paciente</div>
+          <div class="small text-muted"><i class="bi bi-person"></i> Paciente</div>
           <div class="fw-semibold" th:text="${cita.paciente.nombre} + ' ' + ${cita.paciente.apellido}">Paciente</div>
         </div>
         <div class="col-md-4">
-          <div class="small text-muted">Odontólogo</div>
+          <div class="small text-muted"><i class="bi bi-person-badge"></i> Odontólogo</div>
           <div class="fw-semibold" th:text="'Dr(a). ' + ${cita.odontologo.apellido} + ' — ' + ${cita.odontologo.especialidad}">Odontólogo</div>
         </div>
         <div class="col-md-2">
@@ -33,7 +35,8 @@
           <span class="badge-estado" th:classappend="'badge-' + ${cita.estado}" th:text="${cita.estado}">Estado</span>
         </div>
         <div class="col-md-2 text-md-end">
-          <a class="btn btn-sm btn-outline-secondary" th:href="@{/citas/editar/{id}(id=${cita.idCita})}">Editar cita</a>
+          <a class="btn btn-sm btn-outline-secondary" th:href="@{/citas/editar/{id}(id=${cita.idCita})}"
+             title="Editar esta cita" data-bs-toggle="tooltip"><i class="bi bi-pencil-square"></i> Editar cita</a>
         </div>
         <div class="col-12" th:if="${cita.motivo}">
           <div class="small text-muted">Motivo</div>
@@ -46,7 +49,7 @@
       <!-- Tratamientos aplicados -->
       <div class="col-lg-6">
         <div class="card-soft p-3 p-lg-4 h-100">
-          <h2 class="h5 mb-3">Tratamientos aplicados</h2>
+          <h2 class="h5 mb-3"><i class="bi bi-clipboard2-pulse"></i> Tratamientos aplicados</h2>
 
           <div class="table-responsive mb-3" th:if="${not #lists.isEmpty(tratamientosAplicados)}">
             <table class="table table-clinic mb-0">
@@ -59,7 +62,8 @@
                   <td class="text-end">
                     <form th:action="@{/citas/detalle/{id}/tratamiento/{ctId}/eliminar(id=${cita.idCita},ctId=${ct.idCitaTratamiento})}"
                           method="post" data-confirm="¿Quitar este tratamiento de la cita?">
-                      <button type="submit" class="btn btn-sm btn-outline-danger">Quitar</button>
+                      <button type="submit" class="btn btn-sm btn-outline-danger"
+                              title="Quitar este tratamiento" data-bs-toggle="tooltip"><i class="bi bi-dash-circle"></i> Quitar</button>
                     </form>
                   </td>
                 </tr>
@@ -83,7 +87,9 @@
                 <input type="number" id="cantidadTratamiento" name="cantidad" class="form-control form-control-sm" value="1" min="1" required />
               </div>
               <div class="col-3">
-                <button type="submit" class="btn btn-clinic btn-sm w-100">Agregar</button>
+                <button type="submit" class="btn btn-clinic btn-sm w-100" title="Agregar tratamiento a la cita" data-bs-toggle="tooltip">
+                  <i class="bi bi-plus-lg"></i> Agregar
+                </button>
               </div>
             </div>
             <div id="subtotalEstimado" class="small text-muted mt-2">Subtotal estimado: $0.00</div>
@@ -94,9 +100,10 @@
       <!-- Insumos usados -->
       <div class="col-lg-6">
         <div class="card-soft p-3 p-lg-4 h-100">
-          <h2 class="h5 mb-3">Insumos utilizados</h2>
+          <h2 class="h5 mb-3"><i class="bi bi-box-seam"></i> Insumos utilizados</h2>
 
-          <div class="alert alert-danger py-2" th:if="${error}" th:text="${error}">Error</div>
+          <!-- El error de stock insuficiente llega como flash attribute y se muestra
+               como toast de SweetAlert2 (ver fragments/layout :: mensajes al inicio de la página). -->
 
           <div class="table-responsive mb-3" th:if="${not #lists.isEmpty(insumosUsados)}">
             <table class="table table-clinic mb-0">
@@ -108,7 +115,8 @@
                   <td class="text-end">
                     <form th:action="@{/citas/detalle/{id}/insumo/{ciId}/eliminar(id=${cita.idCita},ciId=${ci.idCitaInsumo})}"
                           method="post" data-confirm="¿Quitar este insumo? Se restaurará el stock.">
-                      <button type="submit" class="btn btn-sm btn-outline-danger">Quitar</button>
+                      <button type="submit" class="btn btn-sm btn-outline-danger"
+                              title="Quitar este insumo" data-bs-toggle="tooltip"><i class="bi bi-dash-circle"></i> Quitar</button>
                     </form>
                   </td>
                 </tr>
@@ -131,7 +139,9 @@
                 <input type="number" name="cantidad" class="form-control form-control-sm" value="1" min="1" required />
               </div>
               <div class="col-3">
-                <button type="submit" class="btn btn-clinic btn-sm w-100">Agregar</button>
+                <button type="submit" class="btn btn-clinic btn-sm w-100" title="Registrar insumo en la cita" data-bs-toggle="tooltip">
+                  <i class="bi bi-plus-lg"></i> Agregar
+                </button>
               </div>
             </div>
           </form>
@@ -144,7 +154,10 @@
         <div class="small text-muted">Total de tratamientos aplicados</div>
         <div class="h4 mb-0" th:text="${'$' + #numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')}">$0.00</div>
       </div>
-      <a class="btn btn-clinic" th:href="@{/facturas/generar/{id}(id=${cita.idCita})}">Generar factura</a>
+      <a class="btn btn-clinic" th:href="@{/facturas/generar/{id}(id=${cita.idCita})}"
+         title="Generar la factura de esta cita" data-bs-toggle="tooltip">
+        <i class="bi bi-receipt"></i> Generar factura
+      </a>
     </div>
   </main>
 </div>

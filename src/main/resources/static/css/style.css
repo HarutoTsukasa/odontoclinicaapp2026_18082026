@@ -84,6 +84,8 @@ a { text-decoration: none; }
   transition: background-color .15s ease, color .15s ease;
 }
 
+.sidebar-nav a i.bi { width: 1.1em; text-align: center; font-size: 1rem; }
+
 .sidebar-nav a:hover { background: rgba(255, 255, 255, .12); color: #fff; }
 
 .sidebar-nav a.active {
@@ -210,6 +212,12 @@ a { text-decoration: none; }
   color: var(--clinic-teal-dark);
 }
 .btn-outline-clinic:hover { background: var(--clinic-teal-soft); color: var(--clinic-teal-dark); }
+
+/* Iconos de Bootstrap Icons dentro de botones: separacion consistente del texto */
+.btn i.bi { margin-right: .35rem; vertical-align: -.06em; }
+.btn i.bi:only-child { margin-right: 0; }
+
+[data-bs-toggle="tooltip"] { cursor: pointer; }
 
 /* ---------- Timeline (dashboard: agenda) ---------- */
 

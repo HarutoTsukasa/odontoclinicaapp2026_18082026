@@ -15,7 +15,9 @@
         <h1>Pacientes</h1>
         <p th:text="${#lists.size(pacientes)} + ' paciente(s) registrado(s)'">0 pacientes</p>
       </div>
-      <a class="btn btn-clinic" href="/pacientes/nuevo">+ Nuevo paciente</a>
+      <a class="btn btn-clinic" href="/pacientes/nuevo" title="Registrar un nuevo paciente" data-bs-toggle="tooltip">
+        <i class="bi bi-plus-lg"></i> Nuevo paciente
+      </a>
     </div>
 
     <div class="card-soft">
@@ -43,10 +45,12 @@
               <td class="d-none d-lg-table-cell" th:text="${#temporals.format(p.fechaNacimiento, 'dd/MM/yyyy')}">01/01/1990</td>
               <td class="d-none d-md-table-cell" th:text="${p.genero}">M</td>
               <td class="text-end">
-                <a class="btn btn-sm btn-outline-clinic" th:href="@{/pacientes/editar/{id}(id=${p.idPaciente})}">Editar</a>
+                <a class="btn btn-sm btn-outline-clinic" th:href="@{/pacientes/editar/{id}(id=${p.idPaciente})}"
+                   title="Editar este paciente" data-bs-toggle="tooltip"><i class="bi bi-pencil-square"></i> Editar</a>
                 <form th:action="@{/pacientes/eliminar/{id}(id=${p.idPaciente})}" method="post" class="d-inline"
                       data-confirm="¿Eliminar este paciente? Esta acción no se puede deshacer.">
-                  <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                  <button type="submit" class="btn btn-sm btn-outline-danger"
+                          title="Eliminar este paciente" data-bs-toggle="tooltip"><i class="bi bi-trash3"></i> Eliminar</button>
                 </form>
               </td>
             </tr>

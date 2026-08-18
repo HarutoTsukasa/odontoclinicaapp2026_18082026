@@ -15,7 +15,9 @@
         <h1>Odontólogos</h1>
         <p th:text="${#lists.size(odontologos)} + ' odontólogo(s) registrado(s)'">0</p>
       </div>
-      <a class="btn btn-clinic" href="/odontologos/nuevo">+ Nuevo odontólogo</a>
+      <a class="btn btn-clinic" href="/odontologos/nuevo" title="Registrar un nuevo odontólogo" data-bs-toggle="tooltip">
+        <i class="bi bi-plus-lg"></i> Nuevo odontólogo
+      </a>
     </div>
 
     <div class="card-soft">
@@ -43,10 +45,12 @@
               </td>
               <td class="d-none d-lg-table-cell" th:text="${#temporals.format(o.fechaContratacion, 'dd/MM/yyyy')}">01/01/2020</td>
               <td class="text-end">
-                <a class="btn btn-sm btn-outline-clinic" th:href="@{/odontologos/editar/{id}(id=${o.idOdontologo})}">Editar</a>
+                <a class="btn btn-sm btn-outline-clinic" th:href="@{/odontologos/editar/{id}(id=${o.idOdontologo})}"
+                   title="Editar este odontólogo" data-bs-toggle="tooltip"><i class="bi bi-pencil-square"></i> Editar</a>
                 <form th:action="@{/odontologos/eliminar/{id}(id=${o.idOdontologo})}" method="post" class="d-inline"
                       data-confirm="¿Eliminar este odontólogo?">
-                  <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                  <button type="submit" class="btn btn-sm btn-outline-danger"
+                          title="Eliminar este odontólogo" data-bs-toggle="tooltip"><i class="bi bi-trash3"></i> Eliminar</button>
                 </form>
               </td>
             </tr>

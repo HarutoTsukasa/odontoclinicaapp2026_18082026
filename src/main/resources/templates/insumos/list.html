@@ -15,7 +15,9 @@
         <h1>Insumos</h1>
         <p>Inventario de materiales usados en las citas</p>
       </div>
-      <a class="btn btn-clinic" href="/insumos/nuevo">+ Nuevo insumo</a>
+      <a class="btn btn-clinic" href="/insumos/nuevo" title="Registrar un nuevo insumo" data-bs-toggle="tooltip">
+        <i class="bi bi-plus-lg"></i> Nuevo insumo
+      </a>
     </div>
 
     <div class="card-soft">
@@ -42,10 +44,12 @@
               </td>
               <td class="d-none d-lg-table-cell" th:text="${'$' + #numbers.formatDecimal(i.precioUnitario, 0, 'COMMA', 2, 'POINT')}">$0.00</td>
               <td class="text-end">
-                <a class="btn btn-sm btn-outline-clinic" th:href="@{/insumos/editar/{id}(id=${i.idInsumo})}">Editar</a>
+                <a class="btn btn-sm btn-outline-clinic" th:href="@{/insumos/editar/{id}(id=${i.idInsumo})}"
+                   title="Editar este insumo" data-bs-toggle="tooltip"><i class="bi bi-pencil-square"></i> Editar</a>
                 <form th:action="@{/insumos/eliminar/{id}(id=${i.idInsumo})}" method="post" class="d-inline"
                       data-confirm="¿Eliminar este insumo del inventario?">
-                  <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                  <button type="submit" class="btn btn-sm btn-outline-danger"
+                          title="Eliminar este insumo" data-bs-toggle="tooltip"><i class="bi bi-trash3"></i> Eliminar</button>
                 </form>
               </td>
             </tr>

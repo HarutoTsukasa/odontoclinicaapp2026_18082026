@@ -15,7 +15,9 @@
         <h1>Citas</h1>
         <p th:text="${#lists.size(citas)} + ' cita(s) registrada(s)'">0</p>
       </div>
-      <a class="btn btn-clinic" href="/citas/nueva">+ Nueva cita</a>
+      <a class="btn btn-clinic" href="/citas/nueva" title="Registrar una nueva cita" data-bs-toggle="tooltip">
+        <i class="bi bi-plus-lg"></i> Nueva cita
+      </a>
     </div>
 
     <div class="card-soft">
@@ -37,11 +39,14 @@
               <td class="d-none d-md-table-cell" th:text="'Dr(a). ' + ${c.odontologo.apellido}">Odontólogo</td>
               <td><span class="badge-estado" th:classappend="'badge-' + ${c.estado}" th:text="${c.estado}">Estado</span></td>
               <td class="text-end">
-                <a class="btn btn-sm btn-outline-clinic" th:href="@{/citas/detalle/{id}(id=${c.idCita})}">Ver</a>
-                <a class="btn btn-sm btn-outline-secondary" th:href="@{/citas/editar/{id}(id=${c.idCita})}">Editar</a>
+                <a class="btn btn-sm btn-outline-clinic" th:href="@{/citas/detalle/{id}(id=${c.idCita})}"
+                   title="Ver detalle de la cita" data-bs-toggle="tooltip"><i class="bi bi-eye"></i> Ver</a>
+                <a class="btn btn-sm btn-outline-secondary" th:href="@{/citas/editar/{id}(id=${c.idCita})}"
+                   title="Editar esta cita" data-bs-toggle="tooltip"><i class="bi bi-pencil-square"></i> Editar</a>
                 <form th:action="@{/citas/eliminar/{id}(id=${c.idCita})}" method="post" class="d-inline"
                       data-confirm="¿Eliminar esta cita y todo su detalle?">
-                  <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                  <button type="submit" class="btn btn-sm btn-outline-danger"
+                          title="Eliminar esta cita" data-bs-toggle="tooltip"><i class="bi bi-trash3"></i> Eliminar</button>
                 </form>
               </td>
             </tr>

@@ -13,7 +13,8 @@
         <h1>Generar factura</h1>
         <p th:text="'Cita de ' + ${cita.paciente.nombre} + ' ' + ${cita.paciente.apellido} + ' — ' + ${#temporals.format(cita.fechaHora, 'dd/MM/yyyy HH:mm')}">Cita</p>
       </div>
-      <a class="btn btn-outline-clinic" th:href="@{/citas/detalle/{id}(id=${cita.idCita})}">← Volver a la cita</a>
+      <a class="btn btn-outline-clinic" th:href="@{/citas/detalle/{id}(id=${cita.idCita})}"
+         title="Volver a la cita" data-bs-toggle="tooltip"><i class="bi bi-arrow-left"></i> Volver a la cita</a>
     </div>
 
     <div class="card-soft p-3 p-lg-4" style="max-width: 560px;">
@@ -29,8 +30,11 @@
           <option th:each="m : ${metodosPago}" th:value="${m}" th:text="${m}">Efectivo</option>
         </select>
         <div class="d-flex gap-2">
-          <button type="submit" class="btn btn-clinic">Generar factura</button>
-          <a class="btn btn-outline-secondary" th:href="@{/citas/detalle/{id}(id=${cita.idCita})}">Cancelar</a>
+          <button type="submit" class="btn btn-clinic" title="Generar la factura" data-bs-toggle="tooltip">
+            <i class="bi bi-receipt"></i> Generar factura
+          </button>
+          <a class="btn btn-outline-secondary" th:href="@{/citas/detalle/{id}(id=${cita.idCita})}"
+             title="Cancelar" data-bs-toggle="tooltip"><i class="bi bi-x-lg"></i> Cancelar</a>
         </div>
       </form>
     </div>
