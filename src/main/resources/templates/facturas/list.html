@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Facturas')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar('facturas')}"></aside>
+  <div th:replace="~{fragments/layout :: offcanvasMenu('facturas')}"></div>
+
+  <main class="main-content">
+    <div th:replace="~{fragments/layout :: mensajes}"></div>
+
+    <div class="page-header">
+      <div>
+        <h1>Facturas</h1>
+        <p th:text="${#lists.size(facturas)} + ' factura(s) emitida(s)'">0</p>
+      </div>
+    </div>
+
+    <div class="card-soft">
+      <div class="table-responsive">
+        <table class="table table-clinic mb-0 align-middle">
+          <thead>
+            <tr>
+              <th>Emisión</th>
+              <th>Paciente</th>
+              <th class="d-none d-md-table-cell">Método de pago</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="f : ${facturas}">
+              <td th:text="${#temporals.format(f.fechaEmision, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+              <td>
+                <a th:href="@{/citas/detalle/{id}(id=${f.cita.idCita})}"
+                   th:text="${f.cita.paciente.nombre} + ' ' + ${f.cita.paciente.apellido}">Paciente</a>
+              </td>
+              <td class="d-none d-md-table-cell" th:text="${f.metodoPago}">Efectivo</td>
+              <td th:text="${'$' + #numbers.formatDecimal(f.total, 0, 'COMMA', 2, 'POINT')}">$0.00</td>
+              <td><span class="badge-estado" th:classappend="'badge-' + ${f.estadoPago}" th:text="${f.estadoPago}">Pendiente</span></td>
+              <td class="text-end">
+                <form th:if="${f.estadoPago.name() == 'Pendiente'}" th:action="@{/facturas/{id}/pagar(id=${f.idFactura})}" method="post" class="d-inline">
+                  <button type="submit" class="btn btn-sm btn-outline-clinic">Marcar pagada</button>
+                </form>
+                <form th:action="@{/facturas/{id}/eliminar(id=${f.idFactura})}" method="post" class="d-inline"
+                      data-confirm="¿Eliminar esta factura?">
+                  <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(facturas)}">
+              <td colspan="6" class="text-center text-muted py-4">
+                No hay facturas todavía. Se generan desde el detalle de una cita.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

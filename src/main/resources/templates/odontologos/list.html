@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Odontólogos')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar('odontologos')}"></aside>
+  <div th:replace="~{fragments/layout :: offcanvasMenu('odontologos')}"></div>
+
+  <main class="main-content">
+    <div th:replace="~{fragments/layout :: mensajes}"></div>
+
+    <div class="page-header">
+      <div>
+        <h1>Odontólogos</h1>
+        <p th:text="${#lists.size(odontologos)} + ' odontólogo(s) registrado(s)'">0</p>
+      </div>
+      <a class="btn btn-clinic" href="/odontologos/nuevo">+ Nuevo odontólogo</a>
+    </div>
+
+    <div class="card-soft">
+      <div class="table-responsive">
+        <table class="table table-clinic mb-0 align-middle">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th class="d-none d-md-table-cell">Especialidad</th>
+              <th class="d-none d-md-table-cell">Contacto</th>
+              <th class="d-none d-lg-table-cell">Contratación</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="o : ${odontologos}">
+              <td>
+                <div class="fw-semibold" th:text="'Dr(a). ' + ${o.nombre} + ' ' + ${o.apellido}">Nombre</div>
+                <div class="small text-muted d-md-none" th:text="${o.especialidad}">Especialidad</div>
+              </td>
+              <td class="d-none d-md-table-cell" th:text="${o.especialidad}">Especialidad</td>
+              <td class="d-none d-md-table-cell">
+                <div th:text="${o.email}">correo@ejemplo.com</div>
+                <div class="small text-muted" th:text="${o.telefono}">Teléfono</div>
+              </td>
+              <td class="d-none d-lg-table-cell" th:text="${#temporals.format(o.fechaContratacion, 'dd/MM/yyyy')}">01/01/2020</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-clinic" th:href="@{/odontologos/editar/{id}(id=${o.idOdontologo})}">Editar</a>
+                <form th:action="@{/odontologos/eliminar/{id}(id=${o.idOdontologo})}" method="post" class="d-inline"
+                      data-confirm="¿Eliminar este odontólogo?">
+                  <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(odontologos)}">
+              <td colspan="5" class="text-center text-muted py-4">No hay odontólogos registrados todavía.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

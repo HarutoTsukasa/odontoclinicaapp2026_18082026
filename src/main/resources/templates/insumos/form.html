@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${insumo.idInsumo} == null ? 'Nuevo insumo' : 'Editar insumo')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar('insumos')}"></aside>
+  <div th:replace="~{fragments/layout :: offcanvasMenu('insumos')}"></div>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 th:text="${insumo.idInsumo} == null ? 'Nuevo insumo' : 'Editar insumo'">Insumo</h1>
+        <p>Los campos marcados con * son obligatorios</p>
+      </div>
+      <a class="btn btn-outline-clinic" href="/insumos">← Volver al listado</a>
+    </div>
+
+    <div class="card-soft p-3 p-lg-4" style="max-width: 640px;">
+      <form th:action="@{/insumos/guardar}" th:object="${insumo}" method="post" class="needs-validation" novalidate>
+        <input type="hidden" th:field="*{idInsumo}" />
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Nombre *</label>
+            <input type="text" class="form-control" th:field="*{nombre}" required
+                   th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid'" />
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">Error</div>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" rows="2" th:field="*{descripcion}"></textarea>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Stock actual *</label>
+            <input type="number" min="0" class="form-control" th:field="*{stock}" required
+                   th:classappend="${#fields.hasErrors('stock')} ? 'is-invalid'" />
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}">Error</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Precio unitario *</label>
+            <input type="number" step="0.01" min="0" class="form-control" th:field="*{precioUnitario}" required
+                   th:classappend="${#fields.hasErrors('precioUnitario')} ? 'is-invalid'" />
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('precioUnitario')}" th:errors="*{precioUnitario}">Error</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Unidad de medida</label>
+            <input type="text" class="form-control" th:field="*{unidadMedida}" placeholder="Ej. caja, unidad, ml" />
+          </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-clinic">Guardar</button>
+          <a class="btn btn-outline-secondary" href="/insumos">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

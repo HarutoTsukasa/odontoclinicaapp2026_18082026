@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Insumos')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar('insumos')}"></aside>
+  <div th:replace="~{fragments/layout :: offcanvasMenu('insumos')}"></div>
+
+  <main class="main-content">
+    <div th:replace="~{fragments/layout :: mensajes}"></div>
+
+    <div class="page-header">
+      <div>
+        <h1>Insumos</h1>
+        <p>Inventario de materiales usados en las citas</p>
+      </div>
+      <a class="btn btn-clinic" href="/insumos/nuevo">+ Nuevo insumo</a>
+    </div>
+
+    <div class="card-soft">
+      <div class="table-responsive">
+        <table class="table table-clinic mb-0 align-middle">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th class="d-none d-md-table-cell">Unidad</th>
+              <th>Stock</th>
+              <th class="d-none d-lg-table-cell">Precio unitario</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="i : ${insumos}">
+              <td>
+                <div class="fw-semibold" th:text="${i.nombre}">Nombre</div>
+                <div class="small text-muted d-md-none" th:text="${i.unidadMedida}">Unidad</div>
+              </td>
+              <td class="d-none d-md-table-cell" th:text="${i.unidadMedida}">Unidad</td>
+              <td>
+                <span class="badge-estado" th:classappend="${i.stock lt 10} ? 'badge-Cancelada' : 'badge-Completada'" th:text="${i.stock}">0</span>
+              </td>
+              <td class="d-none d-lg-table-cell" th:text="${'$' + #numbers.formatDecimal(i.precioUnitario, 0, 'COMMA', 2, 'POINT')}">$0.00</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-clinic" th:href="@{/insumos/editar/{id}(id=${i.idInsumo})}">Editar</a>
+                <form th:action="@{/insumos/eliminar/{id}(id=${i.idInsumo})}" method="post" class="d-inline"
+                      data-confirm="¿Eliminar este insumo del inventario?">
+                  <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(insumos)}">
+              <td colspan="5" class="text-center text-muted py-4">No hay insumos registrados todavía.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

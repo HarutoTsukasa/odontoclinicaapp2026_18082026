@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${cita.idCita} == null ? 'Nueva cita' : 'Editar cita')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar('citas')}"></aside>
+  <div th:replace="~{fragments/layout :: offcanvasMenu('citas')}"></div>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 th:text="${cita.idCita} == null ? 'Nueva cita' : 'Editar cita'">Cita</h1>
+        <p>Los campos marcados con * son obligatorios</p>
+      </div>
+      <a class="btn btn-outline-clinic" href="/citas">← Volver al listado</a>
+    </div>
+
+    <div class="card-soft p-3 p-lg-4" style="max-width: 720px;">
+      <form th:action="@{/citas/guardar}" th:object="${cita}" method="post" class="needs-validation" novalidate>
+        <input type="hidden" th:field="*{idCita}" />
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Paciente *</label>
+            <select class="form-select" th:field="*{paciente}" required
+                    th:classappend="${#fields.hasErrors('paciente')} ? 'is-invalid'">
+              <option value="">Selecciona un paciente...</option>
+              <option th:each="p : ${pacientes}" th:value="${p.idPaciente}"
+                      th:text="${p.nombre} + ' ' + ${p.apellido}">Paciente</option>
+            </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('paciente')}" th:errors="*{paciente}">Error</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Odontólogo *</label>
+            <select class="form-select" th:field="*{odontologo}" required
+                    th:classappend="${#fields.hasErrors('odontologo')} ? 'is-invalid'">
+              <option value="">Selecciona un odontólogo...</option>
+              <option th:each="o : ${odontologos}" th:value="${o.idOdontologo}"
+                      th:text="'Dr(a). ' + ${o.nombre} + ' ' + ${o.apellido} + ' — ' + ${o.especialidad}">Odontólogo</option>
+            </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('odontologo')}" th:errors="*{odontologo}">Error</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Fecha y hora *</label>
+            <input type="datetime-local" class="form-control" th:field="*{fechaHora}" required
+                   th:classappend="${#fields.hasErrors('fechaHora')} ? 'is-invalid'" />
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaHora')}" th:errors="*{fechaHora}">Error</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Estado</label>
+            <select class="form-select" th:field="*{estado}">
+              <option th:each="e : ${estados}" th:value="${e}" th:text="${e}">Programada</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Motivo de la consulta</label>
+            <textarea class="form-control" rows="3" th:field="*{motivo}"></textarea>
+          </div>
+        </div>
+        <div class="d-flex gap-2 mt-4">
+          <button type="submit" class="btn btn-clinic">Guardar</button>
+          <a class="btn btn-outline-secondary" href="/citas">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

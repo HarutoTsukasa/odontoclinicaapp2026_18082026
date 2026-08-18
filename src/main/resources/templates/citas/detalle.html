@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Detalle de cita')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar('citas')}"></aside>
+  <div th:replace="~{fragments/layout :: offcanvasMenu('citas')}"></div>
+
+  <main class="main-content">
+    <div th:replace="~{fragments/layout :: mensajes}"></div>
+
+    <div class="page-header">
+      <div>
+        <h1>Detalle de la cita</h1>
+        <p th:text="${#temporals.format(cita.fechaHora, 'EEEE dd/MM/yyyy, HH:mm')}">Fecha</p>
+      </div>
+      <a class="btn btn-outline-clinic" href="/citas">← Volver al listado</a>
+    </div>
+
+    <div class="card-soft p-3 p-lg-4 mb-4">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="small text-muted">Paciente</div>
+          <div class="fw-semibold" th:text="${cita.paciente.nombre} + ' ' + ${cita.paciente.apellido}">Paciente</div>
+        </div>
+        <div class="col-md-4">
+          <div class="small text-muted">Odontólogo</div>
+          <div class="fw-semibold" th:text="'Dr(a). ' + ${cita.odontologo.apellido} + ' — ' + ${cita.odontologo.especialidad}">Odontólogo</div>
+        </div>
+        <div class="col-md-2">
+          <div class="small text-muted">Estado</div>
+          <span class="badge-estado" th:classappend="'badge-' + ${cita.estado}" th:text="${cita.estado}">Estado</span>
+        </div>
+        <div class="col-md-2 text-md-end">
+          <a class="btn btn-sm btn-outline-secondary" th:href="@{/citas/editar/{id}(id=${cita.idCita})}">Editar cita</a>
+        </div>
+        <div class="col-12" th:if="${cita.motivo}">
+          <div class="small text-muted">Motivo</div>
+          <div th:text="${cita.motivo}">Motivo</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Tratamientos aplicados -->
+      <div class="col-lg-6">
+        <div class="card-soft p-3 p-lg-4 h-100">
+          <h2 class="h5 mb-3">Tratamientos aplicados</h2>
+
+          <div class="table-responsive mb-3" th:if="${not #lists.isEmpty(tratamientosAplicados)}">
+            <table class="table table-clinic mb-0">
+              <thead><tr><th>Tratamiento</th><th>Cant.</th><th>Subtotal</th><th></th></tr></thead>
+              <tbody>
+                <tr th:each="ct : ${tratamientosAplicados}">
+                  <td th:text="${ct.tratamiento.nombre}">Tratamiento</td>
+                  <td th:text="${ct.cantidad}">1</td>
+                  <td th:text="${'$' + #numbers.formatDecimal(ct.costoAplicado, 0, 'COMMA', 2, 'POINT')}">$0.00</td>
+                  <td class="text-end">
+                    <form th:action="@{/citas/detalle/{id}/tratamiento/{ctId}/eliminar(id=${cita.idCita},ctId=${ct.idCitaTratamiento})}"
+                          method="post" data-confirm="¿Quitar este tratamiento de la cita?">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">Quitar</button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-muted" th:if="${#lists.isEmpty(tratamientosAplicados)}">Aún no se ha aplicado ningún tratamiento.</p>
+
+          <form th:action="@{/citas/detalle/{id}/tratamiento(id=${cita.idCita})}" method="post" class="border-top pt-3">
+            <div class="row g-2 align-items-end">
+              <div class="col-6">
+                <label class="form-label">Tratamiento</label>
+                <select name="idTratamiento" class="form-select form-select-sm" required
+                        data-costo-base data-cantidad-target="#cantidadTratamiento" data-output-target="#subtotalEstimado">
+                  <option th:each="t : ${tratamientos}" th:value="${t.idTratamiento}" th:attr="data-costo=${t.costo}"
+                          th:text="${t.nombre} + ' ($' + ${t.costo} + ')'">Tratamiento</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <label class="form-label">Cant.</label>
+                <input type="number" id="cantidadTratamiento" name="cantidad" class="form-control form-control-sm" value="1" min="1" required />
+              </div>
+              <div class="col-3">
+                <button type="submit" class="btn btn-clinic btn-sm w-100">Agregar</button>
+              </div>
+            </div>
+            <div id="subtotalEstimado" class="small text-muted mt-2">Subtotal estimado: $0.00</div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Insumos usados -->
+      <div class="col-lg-6">
+        <div class="card-soft p-3 p-lg-4 h-100">
+          <h2 class="h5 mb-3">Insumos utilizados</h2>
+
+          <div class="alert alert-danger py-2" th:if="${error}" th:text="${error}">Error</div>
+
+          <div class="table-responsive mb-3" th:if="${not #lists.isEmpty(insumosUsados)}">
+            <table class="table table-clinic mb-0">
+              <thead><tr><th>Insumo</th><th>Cant.</th><th></th></tr></thead>
+              <tbody>
+                <tr th:each="ci : ${insumosUsados}">
+                  <td th:text="${ci.insumo.nombre}">Insumo</td>
+                  <td th:text="${ci.cantidad}">1</td>
+                  <td class="text-end">
+                    <form th:action="@{/citas/detalle/{id}/insumo/{ciId}/eliminar(id=${cita.idCita},ciId=${ci.idCitaInsumo})}"
+                          method="post" data-confirm="¿Quitar este insumo? Se restaurará el stock.">
+                      <button type="submit" class="btn btn-sm btn-outline-danger">Quitar</button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-muted" th:if="${#lists.isEmpty(insumosUsados)}">Aún no se ha registrado ningún insumo.</p>
+
+          <form th:action="@{/citas/detalle/{id}/insumo(id=${cita.idCita})}" method="post" class="border-top pt-3">
+            <div class="row g-2 align-items-end">
+              <div class="col-6">
+                <label class="form-label">Insumo</label>
+                <select name="idInsumo" class="form-select form-select-sm" required>
+                  <option th:each="i : ${insumos}" th:value="${i.idInsumo}"
+                          th:text="${i.nombre} + ' (stock: ' + ${i.stock} + ')'">Insumo</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <label class="form-label">Cant.</label>
+                <input type="number" name="cantidad" class="form-control form-control-sm" value="1" min="1" required />
+              </div>
+              <div class="col-3">
+                <button type="submit" class="btn btn-clinic btn-sm w-100">Agregar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-soft p-3 p-lg-4 mt-4 d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div>
+        <div class="small text-muted">Total de tratamientos aplicados</div>
+        <div class="h4 mb-0" th:text="${'$' + #numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')}">$0.00</div>
+      </div>
+      <a class="btn btn-clinic" th:href="@{/facturas/generar/{id}(id=${cita.idCita})}">Generar factura</a>
+    </div>
+  </main>
+</div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>

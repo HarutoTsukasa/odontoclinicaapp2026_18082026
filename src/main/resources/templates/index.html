@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Inicio')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div class="app-shell">
+  <aside th:replace="~{fragments/layout :: sidebar('inicio')}"></aside>
+  <div th:replace="~{fragments/layout :: offcanvasMenu('inicio')}"></div>
+
+  <main class="main-content">
+    <div th:replace="~{fragments/layout :: mensajes}"></div>
+
+    <div class="page-header">
+      <div>
+        <h1>Panel general</h1>
+        <p>Resumen de la actividad de la clínica</p>
+      </div>
+      <a class="btn btn-clinic" href="/citas/nueva">+ Nueva cita</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-card__icon">🧑 </div>
+          <div>
+            <div class="stat-card__label">Pacientes</div>
+            <div class="stat-card__value" th:text="${totalPacientes}">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-card__icon">🩺 </div>
+          <div>
+            <div class="stat-card__label">Odontólogos</div>
+            <div class="stat-card__value" th:text="${totalOdontologos}">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-card__icon">📅 </div>
+          <div>
+            <div class="stat-card__label">Citas totales</div>
+            <div class="stat-card__value" th:text="${totalCitas}">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-card__icon">🧾 </div>
+          <div>
+            <div class="stat-card__label">Facturas pendientes</div>
+            <div class="stat-card__value" th:text="${totalFacturasPendientes}">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-soft p-3 p-lg-4">
+      <h2 class="h5 mb-3">Últimas citas registradas</h2>
+      <ul class="timeline" th:if="${not #lists.isEmpty(citasRecientes)}">
+        <li th:each="cita : ${citasRecientes}">
+          <div class="hora" th:text="${#temporals.format(cita.fechaHora, 'dd/MM/yyyy HH:mm')}">01/01/2026 09:00</div>
+          <div class="detalle">
+            <a th:href="@{/citas/detalle/{id}(id=${cita.idCita})}"
+               th:text="${cita.paciente.nombre} + ' ' + ${cita.paciente.apellido} + ' — Dr(a). ' + ${cita.odontologo.apellido}">
+              Paciente — Odontólogo
+            </a>
+            <span class="badge-estado ms-2" th:classappend="'badge-' + ${cita.estado}" th:text="${cita.estado}">Estado</span>
+          </div>
+        </li>
+      </ul>
+      <p class="text-muted mb-0" th:if="${#lists.isEmpty(citasRecientes)}">Aún no hay citas registradas.</p>
+    </div>
+  </main>
+</div>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+</body>
+</html>
